@@ -1,19 +1,14 @@
-
-
 node_modules
-
-
-
-
 /generated/prisma
 
 .env
 .agents
 .claude
 .windsurf
+.kilo
 dist
 
+prisma
 src/genereted
 
-#
-/generated/prisma
+
