@@ -10,6 +10,7 @@ import { toNodeHandler } from "better-auth/node";
 // import { auth } from "./lib/auth";
 import path from "path";
 import { corsOptions } from "./configs/cors";
+import { auth } from "./lib/auth";
 
 // import { PaymentController } from "./modules/payment/payment.controller";
 // import cron from "node-cron";
@@ -27,7 +28,7 @@ app.use(express.urlencoded({ extended: true }))
 app.set("view engine", "ejs");
 app.set("views", path.resolve(process.cwd(), `src/templetes`))
 
-// app.use("/api/auth", toNodeHandler(auth))
+app.use("/api/auth", toNodeHandler(auth))
 
 // cron.schedule(" */25 * * * *", async () => {
 //   try {
