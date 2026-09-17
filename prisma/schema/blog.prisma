@@ -1,0 +1,18 @@
+//  specific product's blog
+
+model Blog {
+    id            String    @id @default(uuid(7))
+    productId     String
+    title         String
+    content       String
+    isDeleted     Boolean   @default(false)
+    createdAt     DateTime  @default(now())
+    updatedAt     DateTime  @updatedAt
+    deletedAt     DateTime?
+
+    product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+    @@index([productId])
+    @@index([isDeleted])
+    @@map("blogs")
+}
