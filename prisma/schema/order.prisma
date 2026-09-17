@@ -1,0 +1,21 @@
+
+
+model Order {
+    id            String    @id @default(uuid(7))
+    orderNumber   String    @unique
+    totalAmount   Float
+    status        String
+    isDeleted     Boolean   @default(false)
+    createdAt     DateTime  @default(now())
+    updatedAt     DateTime  @updatedAt
+    deletedAt     DateTime?
+
+    buyerId String
+    buyer   Buyer   @relation(fields: [buyerId], references: [id], onDelete: Cascade)
+
+    products OrderProduct[]
+
+    @@index([orderNumber])
+    @@index([isDeleted])
+    @@map("orders")
+}

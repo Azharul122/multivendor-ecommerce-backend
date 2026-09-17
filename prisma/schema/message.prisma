@@ -1,0 +1,20 @@
+
+model Message {
+    id            String    @id @default(uuid(7))
+    senderId      String
+    receiverId    String
+    content       String
+    isRead        Boolean   @default(false)
+    isDeleted     Boolean   @default(false)
+    createdAt     DateTime  @default(now())
+    updatedAt     DateTime  @updatedAt
+    deletedAt     DateTime?
+
+    sender   User @relation("Sender", fields: [senderId], references: [id], onDelete: Cascade)
+    receiver User @relation("Receiver", fields: [receiverId], references: [id], onDelete: Cascade)
+
+    @@index([senderId])
+    @@index([receiverId])
+    @@index([isDeleted])
+    @@map("messages")
+}

@@ -8,7 +8,7 @@ node_modules
 .kilo
 dist
 
-prisma
+# prisma
 src/genereted
 
 

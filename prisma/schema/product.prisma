@@ -1,0 +1,25 @@
+
+
+model Product {
+    id            String    @id @default(uuid(7))
+    name          String
+    slug          String    @unique
+    description   String?
+    price         Float
+    stock         Int
+    images        String[]
+    isFeatured    Boolean   @default(false)
+    isVerified    Boolean   @default(false)
+    
+    isDeleted     Boolean   @default(false)
+    createdAt     DateTime  @default(now())
+    updatedAt     DateTime  @updatedAt
+    deletedAt     DateTime?
+
+    sellerId String
+    seller   Seller   @relation(fields: [sellerId], references: [id], onDelete: Cascade)
+
+    @@index([name])
+    @@index([isDeleted])
+    @@map("products")
+}

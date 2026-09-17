@@ -1,0 +1,21 @@
+
+
+model Payment {
+    id            String    @id @default(uuid(7))
+    orderId       String
+    amount        Float
+    paymentMethod String
+    status        String
+    isVerified    Boolean   @default(false)
+    
+    isDeleted     Boolean   @default(false)
+    createdAt     DateTime  @default(now())
+    updatedAt     DateTime  @updatedAt
+    deletedAt     DateTime?
+
+    order Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+    @@index([orderId])
+    @@index([isDeleted])
+    @@map("payments")
+}
