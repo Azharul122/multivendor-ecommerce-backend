@@ -1,12 +1,9 @@
-
-
-model Review {
+model Report {
     id            String    @id @default(uuid(7))
-    userId        String
-    productId     String
-    sellerId      String
-    rating        Int
-    comment       String?
+    userId        String  @unique
+    productId     String @unique
+    sellerId      String @unique
+    reason        String
     isDeleted     Boolean   @default(false)
     createdAt     DateTime  @default(now())
     updatedAt     DateTime  @updatedAt
@@ -18,7 +15,6 @@ model Review {
 
     @@index([userId])
     @@index([productId])
-    @@index([sellerId])
     @@index([isDeleted])
-    @@map("reviews")
+    @@map("reports")
 }

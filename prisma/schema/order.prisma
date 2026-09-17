@@ -10,10 +10,13 @@ model Order {
     updatedAt     DateTime  @updatedAt
     deletedAt     DateTime?
 
-    buyerId String
-    buyer   Buyer   @relation(fields: [buyerId], references: [id], onDelete: Cascade)
+    userId String
+    user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+    sellerId String
+    seller   Seller @relation(fields: [sellerId], references: [id], onDelete: Cascade)
 
-    products OrderProduct[]
+    products Product[] @relation("OrderProducts")
+    payments Payment[] 
 
     @@index([orderNumber])
     @@index([isDeleted])

@@ -1,11 +1,11 @@
 
 model User {
-    id                 String     @id
+    id                 String  @unique @id
     name               String
     email              String
     emailVerified      Boolean    @default(false)
     needPasswordChange Boolean    @default(false)
-    role               Role       @default(PATIENT)
+    role               Role       @default(USER)
     status             UserStatus @default(ACTIVE)
     isDeleted          Boolean    @default(false)
     image              String?
@@ -14,11 +14,16 @@ model User {
     deletedAt          DateTime?
     sessions           Session[]
     accounts           Account[]
-    // patient            Patient?
-    // doctor             Doctor?
     admin              Admin?
+    orders             Order[]
     seller             Seller?
-    buyer              Buyer?
+    groups             Group[]
+    sentMessages       Message[]  @relation("Sender")
+    receivedMessages   Message[]  @relation("Receiver")
+    notifications       Notification[]
+    reports            Report[]
+    reviews            Review[]
+    subscriptions       Subscription[]
 
     @@unique([email])
     @@map("user")

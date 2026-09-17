@@ -1,5 +1,5 @@
 model Seller {
-    id            String    @id @default(uuid(7))
+    id            String  @unique @id @default(uuid(7))
     name          String
     email         String    @unique
     profilePhoto  String?
@@ -13,6 +13,11 @@ model Seller {
 
     userId String @unique
     user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    products Product[]
+    orders   Order[]
+    reports  Report[]
+    reviews  Review[] 
 
     @@index([email])
     @@index([isDeleted])

@@ -1,7 +1,7 @@
 
 
 model Product {
-    id            String    @id @default(uuid(7))
+    id            String @unique @id @default(uuid(7))
     name          String
     slug          String    @unique
     description   String?
@@ -18,6 +18,11 @@ model Product {
 
     sellerId String
     seller   Seller   @relation(fields: [sellerId], references: [id], onDelete: Cascade)
+    orders   Order[] @relation("OrderProducts")
+    reports  Report[]
+    blogs    Blog[] 
+    categories Category[] 
+    reviews  Review[]
 
     @@index([name])
     @@index([isDeleted])
