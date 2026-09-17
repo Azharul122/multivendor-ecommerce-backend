@@ -148,6 +148,56 @@ const verifyEmail = async (email: string, otp: string) => {
 
 // ............................ Reset Password ............................
 
+const resetPassword = async (email: string, otp: string, password: string) => {
+    const isUserExists = await prisma.user.findUnique({
+        where: {
+            email
+        }
+    })
+
+    if (!isUserExists) {
+        throw new AppError(status.NOT_FOUND, "User not found")
+    }
+
+    if (!isUserExists.emailVerified) {
+        throw new AppError(status.FORBIDDEN, "Email not verified")
+    }
+
+    if (isUserExists.isDeleted || isUserExists.status === "BLOCKED") {
+        throw new AppError(status.INTERNAL_SERVER_ERROR, "You can't chnage password please contact with admin")
+    }
+
+    const result = await auth.api.resetPasswordEmailOTP({
+        body: {
+            email,
+            otp,
+            password
+        }
+    })
+
+    // 
+    if (isUserExists?.needPasswordChange) {
+        await prisma.user.update({
+            where: {
+                id: isUserExists.id
+            },
+            data: {
+                needPasswordChange: false
+            }
+        })
+    }
+
+    //delete all session if changed pass
+
+    await prisma.session.deleteMany({
+        where: {
+            userId: isUserExists.id
+        }
+    })
+
+    return result
+}
+
 // ............................ Forgot Password ............................
 const forgotPassword = async (email: string) => {
     const isUserExists = await prisma.user.findUnique({
@@ -175,7 +225,129 @@ const forgotPassword = async (email: string) => {
     return result
 }
 
+
+
+const googleLoginSuccess = async (session: Record<string, any>) => {
+    const isUserExists = await prisma.user.findUnique({
+        where: {
+            id: session.user.id,
+        }
+    })
+
+    if (!isUserExists) {
+        await prisma.user.create({
+            data: {
+                id: session.user.id,
+                name: session.user.name,
+                email: session.user.email,
+            }
+
+        })
+    }
+
+    const accessToken = await getAccessToken({
+        userId: session.user.id,
+        role: session.user.role,
+        name: session.user.name,
+    });
+
+    const refreshToken = await getRefreshToken({
+        userId: session.user.id,
+        role: session.user.role,
+        name: session.user.name,
+    });
+
+    return {
+        accessToken,
+        refreshToken,
+    }
+}
+
 // ............................ Change Password ............................
 
+const changePassword = async (userId: string, oldPassword: string, newPassword: string) => {
+    const isUserExists = await prisma.user.findUnique({
+        where: {
+            id: userId
+        }
+    })
 
-export const userService = { register, login, verifyEmail, forgotPassword };
+    if (!isUserExists) {
+        throw new AppError(status.NOT_FOUND, "User not found")
+    }
+
+    if (!isUserExists.emailVerified) {
+        throw new AppError(status.FORBIDDEN, "Email not verified")
+    }
+
+    if (isUserExists.isDeleted || isUserExists.status === "BLOCKED") {
+        throw new AppError(status.INTERNAL_SERVER_ERROR, "You can't chnage password please contact with admin")
+    }
+
+    const result = await auth.api.changePassword({
+        body: {
+            currentPassword: oldPassword,
+            newPassword
+        }
+    })
+
+    // 
+    if (isUserExists?.needPasswordChange) {
+        await prisma.user.update({
+            where: {
+                id: isUserExists.id
+            },
+            data: {
+                needPasswordChange: false
+            }
+        })
+    }
+
+    //delete all session if changed pass
+
+    await prisma.session.deleteMany({
+        where: {
+            userId: isUserExists.id
+        }
+    })
+
+    return result
+}
+
+// ............................ Get My Profile ............................ 
+
+const getMyProfile = async (userId: string) => {
+    const isUserExists = await prisma.user.findUnique({
+        where: {
+            id: userId
+        }
+    })
+
+    if (!isUserExists) {
+        throw new AppError(status.NOT_FOUND, "User not found")
+    }
+
+    return isUserExists
+}
+
+const logout = async (userId: string) => {
+    const isUserExists = await prisma.user.findUnique({
+        where: {
+            id: userId
+        }
+    })
+
+    if (!isUserExists) {
+        throw new AppError(status.NOT_FOUND, "User not found")
+    }
+
+    await prisma.session.deleteMany({
+        where: {
+            userId: isUserExists.id
+        }
+    })
+}
+
+
+
+export const userService = { register, login, verifyEmail, forgotPassword, resetPassword, googleLoginSuccess, changePassword, getMyProfile, logout };
