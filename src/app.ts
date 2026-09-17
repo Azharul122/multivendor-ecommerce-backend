@@ -2,15 +2,15 @@
 
 import cookieParser from "cookie-parser";
 import express, { Application, Request } from "express";
-// import { indexRouter } from './routes';
-;
-// import notFoundHandler from "./middlewares/notFoundHandler";
-// import { globalErrorHandler } from "./middlewares/globalErrorHandler";
+
 import { toNodeHandler } from "better-auth/node";
-// import { auth } from "./lib/auth";
+;
 import path from "path";
 import { corsOptions } from "./configs/cors";
 import { auth } from "./lib/auth";
+import notFoundHandler from "./middlewares/notFoundHandler";
+import { globalErrorHandler } from "./middlewares/globalErrorHandler";
+import { indexRouter } from "./routes";
 
 // import { PaymentController } from "./modules/payment/payment.controller";
 // import cron from "node-cron";
@@ -40,14 +40,14 @@ app.use("/api/auth", toNodeHandler(auth))
 //   }
 // })
 
-// app.use(`/api/v1`, indexRouter);
+app.use(`/api/v1`, indexRouter);
 
 app.get("/", (req: Request, res: express.Response) => {
   res.send("Hello, World!");
 });
 
-// app.use(notFoundHandler);
-// app.use(globalErrorHandler);
+app.use(notFoundHandler);
+app.use(globalErrorHandler);
 
 
 

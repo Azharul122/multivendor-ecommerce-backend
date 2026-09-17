@@ -11,7 +11,7 @@ import { verifyToken } from "../utils/jwt";
 import envConfig from "../configs/envConfig";
 
 
-export const checkAuth = (...authRoles: Role[] ) => async (req: Request, res: Response, next: NextFunction) => {
+export const checkAuth = (...authRoles: Role[]) => async (req: Request, res: Response, next: NextFunction) => {
     try {
         //Session Token Verification
         const sessionToken = getCookie(req, "betterAuth.session_token");
@@ -20,7 +20,7 @@ export const checkAuth = (...authRoles: Role[] ) => async (req: Request, res: Re
             throw new Error('Unauthorized access! No session token provided.');
         }
 
-     
+
 
         if (sessionToken) {
             const sessionExists = await prisma.session.findFirst({
@@ -67,14 +67,14 @@ export const checkAuth = (...authRoles: Role[] ) => async (req: Request, res: Re
                 }
 
                 req.user = {
-                    name : user.name,
-                    userId : user.id,
-                    role : user.role,
-                    email : user.email,
+                    name: user.name,
+                    userId: user.id,
+                    role: user.role,
+                    email: user.email,
                 }
             }
 
-            const accessToken =getCookie(req, 'accessToken');
+            const accessToken = getCookie(req, 'accessToken');
 
             if (!accessToken) {
                 throw new AppError(status.UNAUTHORIZED, 'Unauthorized access! No access token provided.');
@@ -90,7 +90,7 @@ export const checkAuth = (...authRoles: Role[] ) => async (req: Request, res: Re
             throw new AppError(status.UNAUTHORIZED, 'Unauthorized access! No access token provided.');
         }
 
-        const verifiedToken =await verifyToken(accessToken, envConfig.ACCESS_TOKEN_SECRET);
+        const verifiedToken = await verifyToken(accessToken, envConfig.ACCESS_TOKEN_SECRET);
 
         if (!verifiedToken.success) {
             throw new AppError(status.UNAUTHORIZED, 'Unauthorized access! Invalid access token.');
