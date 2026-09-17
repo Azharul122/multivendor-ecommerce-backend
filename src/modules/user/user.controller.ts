@@ -4,11 +4,11 @@ import { userService } from "./user.service";
 import sendResponse from "../../utils/sendResponse";
 import envConfig from "../../configs/envConfig";
 import { auth } from "../../lib/auth";
-import { setRefreshTokenToCookie } from "../../utils/token";
+import { setBetterAuthSessionToCookie, setRefreshTokenToCookie } from "../../utils/token";
 import { setAccessTokenToCookie } from "../../utils/token";
 
 
-
+// ............................ register ............................
 const register = catchAsync(
     async (req: Request, res: Response) => {
         const { name, email, password, role } = req.body;
@@ -24,18 +24,30 @@ const register = catchAsync(
     }
 )
 
+// ............................ login ............................
 const login = catchAsync(
     async (req: Request, res: Response) => {
         const { email, password } = req.body;
 
         const result = await userService.login(email, password);
 
+        const { accessToken, refreshToken, token, ...rest } = result
+
+        setAccessTokenToCookie(res, accessToken)
+        setRefreshTokenToCookie(res, refreshToken)
+        setBetterAuthSessionToCookie(res, token)
+
         sendResponse(res, {
-            statusCode: 200,
-            success: true,
             message: "User logged in successfully",
-            data: result,
-        });
+            success: true,
+            statusCode: 200,
+            data: {
+                token,
+                accessToken,
+                refreshToken,
+                ...rest
+            }
+        })
     }
 )
 
@@ -221,4 +233,4 @@ const getMyProfile = catchAsync(
     }
 )
 
-export const userController = { register, login, verifyEmail, forgotPassword, resetPassword, changePassword, logout };
+export const userController = { register, login, verifyEmail, forgotPassword, resetPassword, changePassword, logout, googleLogin, googleLoginSuccess, handleOAuthError, getMyProfile };

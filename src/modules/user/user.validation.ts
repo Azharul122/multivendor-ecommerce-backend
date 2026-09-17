@@ -15,9 +15,15 @@ const loginSchema = z.object({
     password: z.string().min(6, "Password must be at least 6 characters long"),
 });
 
+const verifyMail = z.object({
+     email: z.string().email("Invalid email address"),
+    otp: z.string()
+})
+
 
 export const userValidation = {
     register: registerZodValidation,
     login: loginSchema,
+    verify: verifyMail
 };
 
