@@ -2,7 +2,7 @@
 model User {
     id                 String  @unique @id
     name               String
-    email              String
+    email              String 
     emailVerified      Boolean    @default(false)
     needPasswordChange Boolean    @default(false)
     role               Role       @default(USER)

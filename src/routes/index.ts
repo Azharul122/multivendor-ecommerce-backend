@@ -1,4 +1,5 @@
 import { Router } from "express";
+import { userRouter } from "../modules/user/user.route";
 
 
 
@@ -6,8 +7,8 @@ import { Router } from "express";
 const router = Router()
 
 
-// router.use("/auth", authRouter)
-// router.use("/user", userRouter)
+
+router.use("/user", userRouter)
 
 
 
