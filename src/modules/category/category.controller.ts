@@ -6,7 +6,8 @@ import { categoryService } from "./category.service";
 
 const createCategory= catchAsync(async (req: Request, res: Response) => {
     const payload: ICategoryPayload = req.body;
-    const result = await categoryService.createCategory(payload);
+    const file = req.file as Express.Multer.File; 
+    const result = await categoryService.createCategory({...payload, image: file.path});
     sendResponse(res, {
         statusCode: 200,
         success: true,

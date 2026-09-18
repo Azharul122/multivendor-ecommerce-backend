@@ -10,7 +10,8 @@ const createCategory = async (payload: ICategoryPayload) => {
         data: {
             name: payload.name,
             description: payload.description,
-            slug
+            slug,
+            image: payload.image
         }
     })
     return result
