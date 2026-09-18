@@ -6,7 +6,7 @@ model Product {
     slug          String    @unique
     description   String?
     price         Float
-    stock         Int
+    stock         Int @default(0)
     images        String[]
     isFeatured    Boolean   @default(false)
     isVerified    Boolean   @default(false)
