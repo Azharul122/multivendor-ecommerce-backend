@@ -9,6 +9,7 @@ import { auth } from "../../lib/auth";
 import { prisma } from "../../lib/prisma";
 import { UserRegister } from "./user.schema";
 import { getAccessToken, getRefreshToken } from "../../utils/token";
+import { IRequestUser } from "../../types/user";
 
 const register = async (payload: UserRegister) => {
 
@@ -41,7 +42,6 @@ const register = async (payload: UserRegister) => {
                     userId: result.user.id,
                     name: payload.name,
                     email: payload.email,
-                    role: Role.SELLER,
                 },
             });
         }
@@ -217,7 +217,7 @@ const forgotPassword = async (email: string) => {
     if (isUserExists.isDeleted || isUserExists.status === "BLOCKED") {
         throw new AppError(status.INTERNAL_SERVER_ERROR, "You can't chnage password please contact with admin")
     }
-    const result = await auth.api.requestPasswordResetEmailOTP({
+    const result = await auth.api.forgetPasswordEmailOTP({
         body: {
             email
         }
@@ -265,61 +265,79 @@ const googleLoginSuccess = async (session: Record<string, any>) => {
 
 // ............................ Change Password ............................
 
-const changePassword = async (userId: string, oldPassword: string, newPassword: string) => {
-    const isUserExists = await prisma.user.findUnique({
-        where: {
-            id: userId
-        }
+const changePassword = async (payload: any, sessionToken: string) => {
+    const session = await auth.api.getSession({
+        headers: new Headers({
+            Authorization: `Bearer ${sessionToken}`
+        })
     })
 
-    if (!isUserExists) {
-        throw new AppError(status.NOT_FOUND, "User not found")
+    if (!session) {
+        throw new AppError(status.UNAUTHORIZED, "Invalid session token");
     }
 
-    if (!isUserExists.emailVerified) {
-        throw new AppError(status.FORBIDDEN, "Email not verified")
-    }
-
-    if (isUserExists.isDeleted || isUserExists.status === "BLOCKED") {
-        throw new AppError(status.INTERNAL_SERVER_ERROR, "You can't chnage password please contact with admin")
-    }
+    const { oldPassword, newPassword } = payload;
 
     const result = await auth.api.changePassword({
         body: {
             currentPassword: oldPassword,
-            newPassword
-        }
+            newPassword,
+            revokeOtherSessions: true,
+        },
+        headers: new Headers({
+            Authorization: `Bearer ${sessionToken}`
+        })
     })
 
-    // 
-    if (isUserExists?.needPasswordChange) {
+    if (session.user.needPasswordChange) {
         await prisma.user.update({
             where: {
-                id: isUserExists.id
+                id: session.user.id,
             },
             data: {
-                needPasswordChange: false
+                needPasswordChange: false,
             }
         })
     }
 
-    //delete all session if changed pass
+    const accessToken = await getAccessToken({
+        userId: session.user.id,
+        role: session.user.role,
+        name: session.user.name,
+        email: session.user.email,
+        status: session.user.status,
+        isDeleted: session.user.isDeleted,
+        emailVerified: session.user.emailVerified,
+    });
 
-    await prisma.session.deleteMany({
-        where: {
-            userId: isUserExists.id
-        }
-    })
+    const refreshToken = await getRefreshToken({
+        userId: session.user.id,
+        role: session.user.role,
+        name: session.user.name,
+        email: session.user.email,
+        status: session.user.status,
+        isDeleted: session.user.isDeleted,
+        emailVerified: session.user.emailVerified,
+    });
 
-    return result
+
+    return {
+        ...result,
+        accessToken,
+        refreshToken,
+    }
+
+
+
 }
 
 // ............................ Get My Profile ............................ 
 
-const getMyProfile = async (userId: string) => {
+const getMyProfile = async (user: IRequestUser) => {
+    let userData
     const isUserExists = await prisma.user.findUnique({
         where: {
-            id: userId
+            id: user.userId
         }
     })
 
@@ -327,7 +345,31 @@ const getMyProfile = async (userId: string) => {
         throw new AppError(status.NOT_FOUND, "User not found")
     }
 
-    return isUserExists
+    if (user.role === Role.SELLER) {
+        userData = await prisma.seller.findUnique({
+            where: {
+                userId: user.userId
+            },
+            include: {
+                products: true,
+                orders: true,
+                reviews: true
+            }
+        })
+
+    } else if (user.role === Role.ADMIN) {
+        userData = await prisma.admin.findUnique({
+            where: {
+                userId: user.userId
+            }
+        })
+    }
+    else if (user.role === Role.USER) {
+        userData = isUserExists
+
+    }
+
+    return userData
 }
 
 const logout = async (userId: string) => {

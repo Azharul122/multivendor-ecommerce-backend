@@ -6,6 +6,8 @@ import envConfig from "../../configs/envConfig";
 import { auth } from "../../lib/auth";
 import { setBetterAuthSessionToCookie, setRefreshTokenToCookie } from "../../utils/token";
 import { setAccessTokenToCookie } from "../../utils/token";
+import status from "http-status";
+import { IRequestUser } from "../../types/user";
 
 
 // ............................ register ............................
@@ -161,21 +163,25 @@ const handleOAuthError = catchAsync((req: Request, res: Response) => {
 
 // ............................................... Change Password .......................................................................
 
-const changePassword = catchAsync(
-    async (req: Request, res: Response) => {
-        const { userId } = req.user as { userId: string };
-        const { oldPassword, newPassword } = req.body;
+const changePassword = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+    const payload = req.body;
+        const betterAuthSessionToken = req.cookies["betterAuth.session_token"];
 
-        const result = await userService.changePassword(userId, oldPassword, newPassword);
+        const result = await userService.changePassword(payload, betterAuthSessionToken);
+
+        const { accessToken, refreshToken, token } = result;
+
+        setAccessTokenToCookie(res, accessToken);
+        setRefreshTokenToCookie(res, refreshToken);
+        setBetterAuthSessionToCookie(res, token as string);
 
         sendResponse(res, {
-            statusCode: 200,
+            statusCode: status.OK,
             success: true,
             message: "Password changed successfully",
             data: result,
-        })
-    }
-)
+        });
+})
 
 // ............................................... Logout .......................................................................
 
@@ -220,9 +226,9 @@ const logout = catchAsync(
 
 const getMyProfile = catchAsync(
     async (req: Request, res: Response) => {
-        const { userId } = req.user as { userId: string };
+        const userData = req.user
 
-        const result = await userService.getMyProfile(userId);
+        const result = await userService.getMyProfile(userData as IRequestUser);
 
         sendResponse(res, {
             statusCode: 200,
