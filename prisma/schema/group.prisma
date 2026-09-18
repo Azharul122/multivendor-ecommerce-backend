@@ -1,16 +1,14 @@
-
 model Group {
-    id            String    @id @default(uuid(7))
-    name          String
-    description   String?
-    isDeleted     Boolean   @default(false)
-    createdAt     DateTime  @default(now())
-    updatedAt     DateTime  @updatedAt
-    deletedAt     DateTime?
+  id          String    @id @default(uuid(7))
+  name        String
+  description String?
+  isDeleted   Boolean   @default(false)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  deletedAt   DateTime?
+  users       User[]    @relation("GroupToUser")
 
-    users         User[]
-
-    @@index([name])
-    @@index([isDeleted])
-    @@map("groups")
+  @@index([name])
+  @@index([isDeleted])
+  @@map("groups")
 }

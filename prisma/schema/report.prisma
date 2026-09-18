@@ -1,20 +1,19 @@
 model Report {
-    id            String    @id @default(uuid(7))
-    userId        String  @unique
-    productId     String @unique
-    sellerId      String @unique
-    reason        String
-    isDeleted     Boolean   @default(false)
-    createdAt     DateTime  @default(now())
-    updatedAt     DateTime  @updatedAt
-    deletedAt     DateTime?
+  id        String    @id @default(uuid(7))
+  userId    String    @unique
+  productId String    @unique
+  sellerId  String    @unique
+  reason    String
+  isDeleted Boolean   @default(false)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+  product   Product   @relation(fields: [productId], references: [id], onDelete: Cascade)
+  seller    Seller    @relation(fields: [sellerId], references: [id], onDelete: Cascade)
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-    product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
-    seller Seller @relation(fields: [sellerId], references: [id], onDelete: Cascade)
-
-    @@index([userId])
-    @@index([productId])
-    @@index([isDeleted])
-    @@map("reports")
+  @@index([userId])
+  @@index([productId])
+  @@index([isDeleted])
+  @@map("reports")
 }

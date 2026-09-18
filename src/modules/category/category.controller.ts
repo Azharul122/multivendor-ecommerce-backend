@@ -15,4 +15,48 @@ const createCategory= catchAsync(async (req: Request, res: Response) => {
     })
 })
 
-export const categoryController = { createCategory }
+const getAllCategory = catchAsync(async (req: Request, res: Response) => {
+    const result = await categoryService.getAllCategory();
+    sendResponse(res, {
+        statusCode: 200,
+        success: true,
+        message: "Get all category successfully",
+        data: result,
+    })
+})
+
+const getSingleCategory = catchAsync(async (req: Request, res: Response) => {
+    const id = req.params.id;
+    const result = await categoryService.getSingleCategory(id as string);
+    sendResponse(res, {
+        statusCode: 200,
+        success: true,
+        message: "Get single category successfully",
+        data: result,
+    })
+})
+
+const updateCategory = catchAsync(async (req: Request, res: Response) => {
+    const id = req.params.id;
+    const payload: ICategoryPayload = req.body;
+    const result = await categoryService.updateCategory(id as string, payload);
+    sendResponse(res, {
+        statusCode: 200,
+        success: true,
+        message: "Category updated successfully",
+        data: result,
+    })
+})
+
+const deleteCategory = catchAsync(async (req: Request, res: Response) => {
+    const id = req.params.id;
+    const result = await categoryService.deleteCategory(id as string);
+    sendResponse(res, {
+        statusCode: 200,
+        success: true,
+        message: "Category deleted successfully",
+        data: result,
+    })
+})
+
+export const categoryController = { createCategory, getAllCategory, getSingleCategory, updateCategory, deleteCategory }

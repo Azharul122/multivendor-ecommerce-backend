@@ -1,24 +1,20 @@
-
-
 model Order {
-    id            String    @id @default(uuid(7))
-    orderNumber   String    @unique
-    totalAmount   Float
-    status        String
-    isDeleted     Boolean   @default(false)
-    createdAt     DateTime  @default(now())
-    updatedAt     DateTime  @updatedAt
-    deletedAt     DateTime?
+  id          String    @id @default(uuid(7))
+  orderNumber String    @unique
+  totalAmount Float
+  status      String
+  isDeleted   Boolean   @default(false)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  deletedAt   DateTime?
+  userId      String
+  sellerId    String
+  seller      Seller    @relation(fields: [sellerId], references: [id], onDelete: Cascade)
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  payments    Payment[]
+  products    Product[] @relation("OrderProducts")
 
-    userId String
-    user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-    sellerId String
-    seller   Seller @relation(fields: [sellerId], references: [id], onDelete: Cascade)
-
-    products Product[] @relation("OrderProducts")
-    payments Payment[] 
-
-    @@index([orderNumber])
-    @@index([isDeleted])
-    @@map("orders")
+  @@index([orderNumber])
+  @@index([isDeleted])
+  @@map("orders")
 }

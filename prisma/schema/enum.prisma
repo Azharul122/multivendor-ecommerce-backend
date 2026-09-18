@@ -1,20 +1,20 @@
 enum UserStatus {
-    ACTIVE
-    PENDING
-    BLOCKED
+  ACTIVE
+  PENDING
+  BLOCKED
 }
 
 enum Role {
-    USER
-    ADMIN
-    SUPER_ADMIN
-    SELLER
+  USER
+  ADMIN
+  SUPER_ADMIN
+  SELLER
 }
 
 enum Gender {
-    MALE
-    FEMALE
-    OTHERS
+  MALE
+  FEMALE
+  OTHERS
 }
 
 enum BloodGroup {
@@ -27,8 +27,6 @@ enum BloodGroup {
   O_POSITIVE
   O_NEGATIVE
 }
-
-
 
 enum PaymentStatus {
   PAID

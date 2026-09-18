@@ -18,7 +18,8 @@
     "studio": "prisma studio",
     "push": "prisma db push",
     "pull": "prisma db pull",
-    "stripe:webhook": "stripe listen --forward-to localhost:5000/webhook"
+    "stripe:webhook": "stripe listen --forward-to localhost:5000/webhook",
+    "reset": "prisma migrate reset --force"
   },
   "dependencies": {
     "@prisma/adapter-pg": "^7.10.0",

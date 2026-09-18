@@ -1,24 +1,21 @@
-
-
 model Review {
-    id            String    @id @default(uuid(7))
-    userId        String
-    productId     String
-    sellerId      String
-    rating        Int
-    comment       String?
-    isDeleted     Boolean   @default(false)
-    createdAt     DateTime  @default(now())
-    updatedAt     DateTime  @updatedAt
-    deletedAt     DateTime?
+  id        String    @id @default(uuid(7))
+  userId    String
+  productId String
+  sellerId  String
+  rating    Int
+  comment   String?
+  isDeleted Boolean   @default(false)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+  product   Product   @relation(fields: [productId], references: [id], onDelete: Cascade)
+  seller    Seller    @relation(fields: [sellerId], references: [id], onDelete: Cascade)
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-    product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
-    seller Seller @relation(fields: [sellerId], references: [id], onDelete: Cascade)
-
-    @@index([userId])
-    @@index([productId])
-    @@index([sellerId])
-    @@index([isDeleted])
-    @@map("reviews")
+  @@index([userId])
+  @@index([productId])
+  @@index([sellerId])
+  @@index([isDeleted])
+  @@map("reviews")
 }
