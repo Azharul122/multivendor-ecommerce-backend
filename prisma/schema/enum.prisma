@@ -32,3 +32,14 @@ enum PaymentStatus {
   PAID
   UNPAID
 }
+
+
+enum DiscountType {
+  PERCENTAGE
+  FIXED
+}
+
+enum CouponScope {
+  CART
+  PRODUCT
+}

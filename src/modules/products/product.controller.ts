@@ -21,4 +21,29 @@ const createProduct = catchAsync(
     }
 )
 
-export const productController = { createProduct };
+// ............................................... All Product .......................................................................
+
+const allProducts = catchAsync(async (req: Request, res: Response) => {
+    const result = await productService.allProducts();
+    sendResponse(res, {
+        statusCode: 200,
+        success: true,
+        message: "Get all products successfully",
+        data: result,
+    })
+})
+
+// ............................................... Single Product .......................................................................
+
+const singleProduct = catchAsync(async (req: Request, res: Response) => {
+    const id = req.params.id;
+    const result = await productService.getSingleProduct(id as string);
+    sendResponse(res, {
+        statusCode: 200,
+        success: true,
+        message: "Get single product successfully",
+        data: result,
+    })
+})
+
+export const productController = { createProduct, allProducts, singleProduct };

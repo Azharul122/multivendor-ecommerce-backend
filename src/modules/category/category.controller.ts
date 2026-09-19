@@ -4,10 +4,10 @@ import sendResponse from "../../utils/sendResponse";
 import { categoryService } from "./category.service";
 
 
-const createCategory= catchAsync(async (req: Request, res: Response) => {
+const createCategory = catchAsync(async (req: Request, res: Response) => {
     const payload: ICategoryPayload = req.body;
-    const file = req.file as Express.Multer.File; 
-    const result = await categoryService.createCategory({...payload, image: file.path});
+    const file = req.file as Express.Multer.File;
+    const result = await categoryService.createCategory({ ...payload, image: file.path });
     sendResponse(res, {
         statusCode: 200,
         success: true,
@@ -39,8 +39,9 @@ const getSingleCategory = catchAsync(async (req: Request, res: Response) => {
 
 const updateCategory = catchAsync(async (req: Request, res: Response) => {
     const id = req.params.id;
+    const file = req.file as Express.Multer.File;
     const payload: ICategoryPayload = req.body;
-    const result = await categoryService.updateCategory(id as string, payload);
+    const result = await categoryService.updateCategory(id as string, { ...payload, image: file.path });
     sendResponse(res, {
         statusCode: 200,
         success: true,

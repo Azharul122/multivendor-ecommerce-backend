@@ -19,6 +19,7 @@ model Product {
   reviews     Review[]
   categories  Category[] @relation("CategoryToProduct")
   orders      Order[]    @relation("OrderProducts")
+  couponProducts CouponProduct[] 
 
   @@index([name])
   @@index([isDeleted])

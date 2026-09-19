@@ -1,11 +1,23 @@
+import status from "http-status";
+import { AppError } from "../../errors/AppError";
 import { prisma } from "../../lib/prisma"
 import slugify from "../../utils/slugify";
 
 
 const createCategory = async (payload: ICategoryPayload) => {
-    console.log(payload)
+
     const slug = slugify(payload.name);
-    console.log(slug)
+
+    // already exist slug
+    const isAlreadyExist = await prisma.category.findUnique({
+        where: {
+            slug
+        }
+    })
+
+    if (isAlreadyExist) {
+        throw new AppError(status.BAD_REQUEST, "Category Already exist")
+    }
     const result = await prisma.category.create({
         data: {
             name: payload.name,
@@ -47,7 +59,8 @@ const updateCategory = async (id: string, payload: ICategoryPayload) => {
         },
         data: {
             name: payload.name,
-            description: payload.description
+            description: payload.description,
+            image: payload.image
         }
     })
     return result

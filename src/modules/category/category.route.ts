@@ -14,7 +14,7 @@ router.post("/create",
 
 router.get("/all", categoryController.getAllCategory)
 router.get("/:id", categoryController.getSingleCategory)
-router.put("/:id", categoryController.updateCategory)
+router.patch("/:id", multerUpload.single("image"), categoryController.updateCategory)
 router.delete("/:id", categoryController.deleteCategory)
 
 export const categoryRouter = router

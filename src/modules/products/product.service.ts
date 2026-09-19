@@ -46,7 +46,7 @@ const createProduct = async (payload: IProductPayload) => {
             isFeatured,
             isVerified,
             seller: {
-                connect: { id: seller.userId },
+                connect: { userId: seller.userId },
             },
             categories: {
                 connect: categoryIds.map((id) => ({ id })),
@@ -60,4 +60,116 @@ const createProduct = async (payload: IProductPayload) => {
     return result;
 };
 
-export const productService = { createProduct };
+const allProducts = async () => {
+    const result = await prisma.product.findMany({
+        include: {
+            categories: true,
+            seller: true,
+        },
+    });
+    return result;
+};
+
+const getSingleProduct = async (id: string) => {
+    const result = await prisma.product.findUnique({
+        where: {
+            id,
+        },
+        include: {
+            categories: true,
+            seller: true,
+        },
+    });
+    return result;
+};
+
+// ............................................... Recent view Product .......................................................................
+
+const resendViewProducts = async (id: string) => {
+    const result = await prisma.product.update({
+        where: {
+            id,
+        },
+        data: {
+            views: {
+                increment: 1,
+            },
+        },
+    });
+    return result;
+};
+
+// ............................................... Delete Product .......................................................................
+
+const deleteProduct = async (id: string) => {
+    const result = await prisma.product.update({
+        where: {
+            id,
+        },
+        data: {
+            isDeleted: true,
+            deletedAt: new Date(),
+        },
+    });
+
+    // Soft delete all reviews
+    await prisma.review.updateMany({
+        where: {
+            productId: id,
+        },
+        data: {
+            isDeleted: true,
+            deletedAt: new Date(),
+        },
+    });
+
+    // Find orders containing this product
+    const orders = await prisma.order.findMany({
+        where: {
+            products: {
+                some: {
+                    id,
+                },
+            },
+        },
+        select: {
+            id: true,
+        },
+    });
+
+    // Soft delete those orders
+    await prisma.order.updateMany({
+        where: {
+            id: {
+                in: orders.map((order) => order.id),
+            },
+        },
+        data: {
+            isDeleted: true,
+            deletedAt: new Date(),
+        },
+    });
+
+    return result;
+};
+// ............................................... Update Product .......................................................................
+
+const updateProduct = async (id: string, payload: IProductPayload) => {
+    const result = await prisma.product.update({
+        where: {
+            id,
+        },
+        data: {
+            name: payload.name,
+            description: payload.description,
+            price: payload.price,
+            images: payload.images,
+            stock: payload.stock,
+            isFeatured: payload.isFeatured,
+            isVerified: payload.isVerified,
+        },
+    });
+    return result;
+};
+
+export const productService = { createProduct, allProducts, getSingleProduct };
