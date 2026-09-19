@@ -1,4 +1,5 @@
 
+import { deleteFileFromCloudinary } from "../../configs/cloudinary";
 import { prisma } from "../../lib/prisma";
 
 
@@ -23,8 +24,6 @@ export const createBlog = async (payload: IBlogPayload) => {
 }
 
 
-
-
 // .......................... Get All Blog ..............................
 
 const getAllBlogs = async () => {
@@ -42,14 +41,31 @@ const getSingleBlog = async (id: string) => {
 // .......................... Update Blog ..............................
 
 const updateBlog = async (id: string, payload: IBlogPayload) => {
+    const blog = await prisma.blog.findUniqueOrThrow({ where: { id } });
+
     const result = await prisma.blog.update({ where: { id }, data: payload });
+
+    const deletions: Promise<any>[] = [];
+
+    if (payload.image && payload.image !== blog.image && blog.image) {
+        deletions.push(deleteFileFromCloudinary(blog.image));
+    }
+    if (payload.video && payload.video !== blog.video && blog.video) {
+        deletions.push(deleteFileFromCloudinary(blog.video));
+    }
+    if (payload.coverImage && payload.coverImage !== blog.coverImage && blog.coverImage) {
+        deletions.push(deleteFileFromCloudinary(blog.coverImage));
+    }
+
+    await Promise.allSettled(deletions);
+
     return result;
-}
+};
 
 // .......................... Delete Blog ..............................
 
 const deleteBlog = async (id: string) => {
-    const result = await prisma.blog.delete({ where: { id } });
+    const result = await prisma.blog.update({ where: { id }, data: { isDeleted: true, deletedAt: new Date() } });
     return result;
 }
 

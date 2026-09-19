@@ -11,7 +11,7 @@ router.post("/create/:productId", multerUpload.fields([{ name: "image", maxCount
 
 router.get("/all", blogController.getAllBlogs)
 router.get("/:id", blogController.getSingleBlog)
-router.patch("/:id", multerUpload.fields([{ name: "image", maxCount: 1 }, { name: "video", maxCount: 1 }, { name: "coverImage", maxCount: 1 }]), blogController.updateBlog)
+router.patch("/:id", multerUpload.fields([{ name: "image", maxCount: 1 }, { name: "video", maxCount: 1 }, { name: "coverImage", maxCount: 1 }]), checkAuth(Role.SELLER, Role.ADMIN, Role.SUPER_ADMIN, Role.USER), blogController.updateBlog)
 router.delete("/:id", blogController.deleteBlog)
 router.get("/productby/:productId", blogController.blogByProduct)
 

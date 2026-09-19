@@ -57,8 +57,18 @@ const getSingleBlog = catchAsync(async (req: Request, res: Response) => {
 
 const updateBlog = catchAsync(async (req: Request, res: Response) => {
     const id = req.params.id;
-    const payload: IBlogPayload = req.body;
-    const result = await blogService.updateBlog(id as string, payload);
+     const payload: IBlogPayload =
+        typeof req.body.data === "string"
+            ? JSON.parse(req.body.data)
+            : req.body.data;
+
+    const files = req.files as {
+        image?: Express.Multer.File[];
+        video?: Express.Multer.File[];
+        coverImage?: Express.Multer.File[];
+    };
+
+    const result = await blogService.updateBlog(id as string, { ...payload, image: files?.image?.[0]?.path, video: files?.video?.[0]?.path, coverImage: files?.coverImage?.[0]?.path });
     sendResponse(res, {
         statusCode: 200,
         success: true,
