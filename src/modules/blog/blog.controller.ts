@@ -34,4 +34,60 @@ const createBlog = catchAsync(async (req: Request, res: Response) => {
     });
 });
 
-export const blogController = { createBlog }
+const getAllBlogs = catchAsync(async (req: Request, res: Response) => {
+    const result = await blogService.getAllBlogs();
+    sendResponse(res, {
+        statusCode: 200,
+        success: true,
+        message: "Get all blogs successfully",
+        data: result,
+    });
+});
+
+const getSingleBlog = catchAsync(async (req: Request, res: Response) => {
+    const id = req.params.id;
+    const result = await blogService.getSingleBlog(id as string);
+    sendResponse(res, {
+        statusCode: 200,
+        success: true,
+        message: "Get single blog successfully",
+        data: result,
+    });
+});
+
+const updateBlog = catchAsync(async (req: Request, res: Response) => {
+    const id = req.params.id;
+    const payload: IBlogPayload = req.body;
+    const result = await blogService.updateBlog(id as string, payload);
+    sendResponse(res, {
+        statusCode: 200,
+        success: true,
+        message: "Blog updated successfully",
+        data: result,
+    });
+});
+
+const deleteBlog = catchAsync(async (req: Request, res: Response) => {
+    const id = req.params.id;
+    const result = await blogService.deleteBlog(id as string);
+    sendResponse(res, {
+        statusCode: 200,
+        success: true,
+        message: "Blog deleted successfully",
+        data: result,
+    });
+});
+
+const blogByProduct = catchAsync(async (req: Request, res: Response) => {
+    const id = req.params.id;
+    const result = await blogService.blogByProduct(id as string);
+    sendResponse(res, {
+        statusCode: 200,
+        success: true,
+        message: "Get blog by product successfully",
+        data: result,
+    });
+});
+
+
+export const blogController = { createBlog, getAllBlogs, getSingleBlog, updateBlog, deleteBlog, blogByProduct }

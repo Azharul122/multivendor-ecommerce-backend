@@ -56,7 +56,7 @@ const deleteBlog = async (id: string) => {
 // .......................... Blog by Product ..............................
 
 const blogByProduct = async (id: string) => {
-    const result = await prisma.blog.findMany({ where: { productId: id } });
+    const result = await prisma.blog.findMany({ where: { productId: id }, include: { author: { select: { name: true, email: true, image: true } } } });
     return result;
 }
 
