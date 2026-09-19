@@ -23,6 +23,7 @@ model User {
   sessions           Session[]
   subscriptions      Subscription[]
   groups             Group[]        @relation("GroupToUser")
+  blogs Blog[]
 
   @@map("user")
 }
