@@ -172,4 +172,4 @@ const updateProduct = async (id: string, payload: IProductPayload) => {
     return result;
 };
 
-export const productService = { createProduct, allProducts, getSingleProduct };
+export const productService = { createProduct, allProducts, getSingleProduct, resendViewProducts, deleteProduct, updateProduct };

@@ -3,6 +3,9 @@ model Blog {
   productId String
   title     String
   content   String
+  image String?
+  video String?
+  coverImage String?
   isDeleted Boolean   @default(false)
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
