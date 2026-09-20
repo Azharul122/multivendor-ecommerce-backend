@@ -24,6 +24,7 @@ model User {
   subscriptions      Subscription[]
   groups             Group[]        @relation("GroupToUser")
   blogs Blog[]
+  address Address[]
 
   @@map("user")
 }

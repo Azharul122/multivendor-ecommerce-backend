@@ -5,6 +5,7 @@ model Product {
   description String?
   price       Float
   stock       Int
+  lowStockAt Int @default(5)
   images      String[]
   isFeatured  Boolean    @default(false)
   isVerified  Boolean    @default(false)
@@ -25,3 +26,4 @@ model Product {
   @@index([isDeleted])
   @@map("products")
 }
+

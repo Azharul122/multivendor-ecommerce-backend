@@ -9,10 +9,18 @@ model Order {
   deletedAt   DateTime?
   userId      String
   sellerId    String
+
+  shippingAddressId String
+  billingAddressId  String
+
   seller      Seller    @relation(fields: [sellerId], references: [id], onDelete: Cascade)
   user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   payments    Payment[]
   products    Product[] @relation("OrderProducts")
+
+
+  shippingAddress Address @relation("OrderShippingAddress", fields: [shippingAddressId], references: [id])
+  billingAddress  Address @relation("OrderBillingAddress", fields: [billingAddressId], references: [id])
 
   @@index([orderNumber])
   @@index([isDeleted])

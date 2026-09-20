@@ -1,0 +1,21 @@
+model Address {
+  id         String   @id @default(uuid(7))
+  userId     String? 
+  firstName  String
+  lastName   String
+  line1      String
+  city       String
+  postalCode String?
+  country    String
+  phone      String
+  isSaved    Boolean  @default(false) 
+  createdAt  DateTime @default(now())
+
+  user           User?   @relation(fields: [userId], references: [id], onDelete: SetNull)
+  shippingOrders Order[] @relation("OrderShippingAddress")
+  billingOrders  Order[] @relation("OrderBillingAddress")
+
+  @@index([userId])
+  @@map("addresses")
+}
+
