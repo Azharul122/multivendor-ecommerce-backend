@@ -9,6 +9,7 @@ model Coupon {
 
   discountType        DiscountType
   discountValue       Float
+  maxDiscountAmount Float
 
   scope               CouponScope
 
