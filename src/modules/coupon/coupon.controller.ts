@@ -14,4 +14,15 @@ const couponController = catchAsync(async (req: Request, res: Response) => {
     })
 })
 
-export const couponControllers = { couponController }
+const applyCoupon = catchAsync(async (req: Request, res: Response) => {
+    const payload = req.body;
+    const result = await CouponService.applyCoupon(payload);
+    sendResponse(res, {
+        statusCode: 200,
+        success: true,
+        message: "Coupon applied successfully",
+        data: result,
+    })
+})
+
+export const couponControllers = { couponController, applyCoupon }

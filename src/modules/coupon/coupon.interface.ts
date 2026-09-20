@@ -17,4 +17,9 @@ import { CouponScope, DiscountType } from "../../genereted/prisma/enums";
   productIds?: string[]; // scope PRODUCT hole required
 }
 
-export { ICouponPayload }
+ interface IApplyCouponPayload {
+  code: string;
+  items: { productId: string; price: number; quantity: number }[];
+}
+
+export { ICouponPayload,IApplyCouponPayload };
