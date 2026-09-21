@@ -31,6 +31,7 @@ enum BloodGroup {
 enum PaymentStatus {
   PAID
   UNPAID
+  
 }
 
 
@@ -43,3 +44,5 @@ enum CouponScope {
   CART
   PRODUCT
 }
+
+

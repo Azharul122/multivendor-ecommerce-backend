@@ -14,7 +14,7 @@ import { CouponScope, DiscountType } from "../../genereted/prisma/enums";
   startDate: string | Date;
   endDate: string | Date;
   isActive?: boolean;
-  productIds?: string[]; // scope PRODUCT hole required
+  productIds?: string[]; 
 }
 
  interface IApplyCouponPayload {
