@@ -1,4 +1,16 @@
+model Invoice {
+  id            String    @id @default(uuid(7))
+  invoiceNumber String    @unique
+  orderId       String    @unique
+  totalAmount   Float
+  status        String    // issued | paid | cancelled
+  pdfUrl        String?
+  issuedAt      DateTime  @default(now())
+  isDeleted     Boolean   @default(false)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  order         Order     @relation(fields: [orderId], references: [id], onDelete: Cascade)
 
-// model Invoice {
-//     id @
-// }
+  @@index([orderId])
+  @@map("invoices")
+}

@@ -3,6 +3,7 @@ model Payment {
   orderId       String
   amount        Float
   paymentMethod String
+  stripePaymentIntentId  String?   @unique
   status        String
   isVerified    Boolean   @default(false)
   isDeleted     Boolean   @default(false)
@@ -10,6 +11,7 @@ model Payment {
   updatedAt     DateTime  @updatedAt
   deletedAt     DateTime?
   order         Order     @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  refunds Refund[]
 
   @@index([orderId])
   @@index([isDeleted])

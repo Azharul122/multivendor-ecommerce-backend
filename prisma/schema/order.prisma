@@ -17,6 +17,7 @@ model Order {
   user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   payments    Payment[]
   products    Product[] @relation("OrderProducts")
+  invoice Invoice[]
 
 
   shippingAddress Address @relation("OrderShippingAddress", fields: [shippingAddressId], references: [id])

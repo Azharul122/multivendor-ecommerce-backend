@@ -31,9 +31,7 @@ enum BloodGroup {
 enum PaymentStatus {
   PAID
   UNPAID
-  
 }
-
 
 enum DiscountType {
   PERCENTAGE
@@ -45,4 +43,8 @@ enum CouponScope {
   PRODUCT
 }
 
-
+enum RefundStatus {
+  FAILED
+  PENDING
+  SUCCESSED
+}

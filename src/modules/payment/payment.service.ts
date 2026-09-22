@@ -4,10 +4,7 @@ import { prisma } from "../../lib/prisma";
 import { IPaymentIntentResponse, IVerifyPaymentResponse } from "./payment.interface";
 
 
-// .......................... Create Payment Intent ..............................
-// card / Google Pay / Apple Pay - সবগুলোই automatic_payment_methods এর মাধ্যমে
-// একই PaymentIntent থেকে হ্যান্ডেল হবে, আলাদা লজিক লাগবে না। Wallet দুটো
-// browser + domain support অনুযায়ী ফ্রন্টএন্ডে নিজে থেকেই শো করবে।
+
 
 const createPaymentIntent = async (
   orderId: string
@@ -17,14 +14,13 @@ const createPaymentIntent = async (
   });
 
   const paymentIntent = await stripe.paymentIntents.create({
-    amount: Math.round(order.totalAmount * 100), // Stripe amount নেয় smallest unit-এ (cents)
+    amount: Math.round(order.totalAmount * 100), 
     currency: "usd",
     automatic_payment_methods: { enabled: true },
     metadata: { orderId: order.id },
   });
 
-  // প্রতিটা attempt-এর জন্য একটা pending payment record রাখছি,
-  // status webhook থেকে succeeded/failed এ update হবে
+
   await prisma.payment.create({
     data: {
       orderId: order.id,
@@ -40,7 +36,7 @@ const createPaymentIntent = async (
   };
 };
 
-// .......................... Verify Payment (frontend redirect page থেকে কল হবে) ..........
+// .......................... Verify Payment  ..........
 
 const verifyPayment = async (
   paymentIntentId: string
@@ -52,7 +48,7 @@ const verifyPayment = async (
   };
 };
 
-// .......................... Stripe Webhook Handler (source of truth) ..............
+// .......................... Stripe Webhook Handler  ..............
 
 const constructWebhookEvent = (rawBody: Buffer, signature: string) => {
   return stripe.webhooks.constructEvent(
