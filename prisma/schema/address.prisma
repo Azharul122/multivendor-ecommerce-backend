@@ -1,14 +1,15 @@
 model Address {
   id         String   @id @default(uuid(7))
   userId     String? 
-  firstName  String
-  lastName   String
-  line1      String
+  name  String
+  addressLineOne String?
+  address      String
   city       String
-  postalCode String?
+  postalCode String
   country    String
   phone      String
   isSaved    Boolean  @default(false) 
+  isSameAddress Boolean @default(true)
   createdAt  DateTime @default(now())
 
   user           User?   @relation(fields: [userId], references: [id], onDelete: SetNull)
