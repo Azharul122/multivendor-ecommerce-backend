@@ -48,3 +48,10 @@ enum RefundStatus {
   PENDING
   SUCCESSED
 }
+
+enum BillingInterval {
+  DAY
+  WEEK
+  MONTH
+  YEAR
+}
