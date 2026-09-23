@@ -1,0 +1,15 @@
+model Plan {
+  id          String         @id @default(uuid(7))
+  name        String
+  price       Float
+  interval    String         // "monthly" | "yearly" — recurring billing এর জন্য লাগবে
+  isDeleted   Boolean        @default(false)
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+  deletedAt   DateTime?
+  subscriptions Subscription[]
+
+  @@index([isDeleted])
+  @@map("plans")
+}
+

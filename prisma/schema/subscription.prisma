@@ -1,17 +1,22 @@
 model Subscription {
-  id        String    @id @default(uuid(7))
-  userId    String
-  plan      String
-  status    String
-  startDate DateTime
-  endDate   DateTime
-  isDeleted Boolean   @default(false)
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  deletedAt DateTime?
-  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id                    String    @id @default(uuid(7))
+  userId                String
+  planId                String    
+  priceAtSubscription    Float    
+  status                String    
+  autoRenew             Boolean   @default(true)  
+  startDate             DateTime
+  endDate               DateTime
+  isDeleted             Boolean   @default(false)
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+  deletedAt             DateTime?
+
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  plan   Plan @relation(fields: [planId], references: [id])
 
   @@index([userId])
+  @@index([planId])
   @@index([isDeleted])
   @@map("subscriptions")
 }
