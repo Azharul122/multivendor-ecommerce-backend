@@ -2,7 +2,7 @@ model Plan {
   id          String         @id @default(uuid(7))
   name        String
   price       Float
-  interval    String         // "monthly" | "yearly" — recurring billing এর জন্য লাগবে
+  interval    String         
   isDeleted   Boolean        @default(false)
   createdAt   DateTime       @default(now())
   updatedAt   DateTime       @updatedAt
