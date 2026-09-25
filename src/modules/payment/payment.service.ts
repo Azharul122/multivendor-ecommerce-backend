@@ -101,6 +101,12 @@ const handleStripeWebhookEvent = async (event: Stripe.Event) => {
   }
 };
 
+// Subscriptions
+
+const purchaseSubscription = async () => {
+  // TODO
+};
+
 export const paymentService = {
   createPaymentIntent,
   verifyPayment,

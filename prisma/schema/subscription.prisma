@@ -3,8 +3,9 @@ model Subscription {
   userId                String
   planId                String    
   priceAtSubscription    Float    
+  stripeSubscriptionId String? @unique
   status                String    
-  autoRenew             Boolean   @default(true)  
+  autoRenew             Boolean   @default(false)  
   startDate             DateTime
   endDate               DateTime
   isDeleted             Boolean   @default(false)

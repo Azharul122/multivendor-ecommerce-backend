@@ -20,6 +20,7 @@ model User {
   reports            Report?
   reviews            Review[]
   seller             Seller?
+   stripeCustomerId String? @unique 
   sessions           Session[]
   subscriptions      Subscription[]
   groups             Group[]        @relation("GroupToUser")
