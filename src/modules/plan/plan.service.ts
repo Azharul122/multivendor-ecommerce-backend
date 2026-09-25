@@ -24,5 +24,46 @@ const createNewPlan = async (payload: IPlanPayload) => {
 
 }
 
+// admin route
 
-export const planService = { createNewPlan }
+const getAllPlans = async () => {
+    const result = await prisma.plan.findMany(
+
+    )
+    return result
+}
+
+const getSinglePlan = async (id: string) => {
+    const result = await prisma.plan.findUnique({
+        where: {
+            id
+        }
+    })
+    return result
+}
+
+const updatePlan = async (id: string, payload: IPlanPayload) => {
+    const result = await prisma.plan.update({
+        where: {
+            id
+        },
+        data: payload
+    })
+    return result
+}
+
+const deletePlan = async (id: string) => {
+    const result = await prisma.plan.update({
+        where: {
+            id
+        },
+        data: {
+            isDeleted: true,
+            deletedAt: new Date()
+        }
+    })
+    return result
+}
+
+
+export const planService = { createNewPlan, getAllPlans, getSinglePlan, updatePlan, deletePlan }

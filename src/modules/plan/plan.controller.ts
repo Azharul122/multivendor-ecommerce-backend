@@ -19,7 +19,64 @@ const createNewPlan = catchAsync(
     }
 )
 
+const getAllPlan = catchAsync(
+    async (req: Request, res: Response) => {
+        const result = planService.getAllPlans()
+
+        sendResponse(res, {
+            statusCode: 200,
+            success: true,
+            message: "Get all plan successfully",
+            data: result,
+        })
+    }
+)
+
+const getSinglePlan = catchAsync(
+    async (req: Request, res: Response) => {
+        const id = req.params.id;
+        const result = planService.getSinglePlan(id as string)
+        sendResponse(res, {
+            statusCode: 200,
+            success: true,
+            message: "Get single plan successfully",
+            data: result,
+        })
+    }
+)
+
+const updatePlan = catchAsync(
+    async (req: Request, res: Response) => {
+        const id = req.params.id;
+        const payload = req.body
+        const result = planService.updatePlan(id as string, payload)
+        sendResponse(res, {
+            statusCode: 200,
+            success: true,
+            message: "Plan updated successfully",
+            data: result,
+        })
+    }
+)
+
+const deletePlan = catchAsync(
+    async (req: Request, res: Response) => {
+        const id = req.params.id;
+        const result = planService.deletePlan(id as string)
+        sendResponse(res, {
+            statusCode: 200,
+            success: true,
+            message: "Plan deleted successfully",
+            data: result,
+        })
+    }
+)
+
 
 export const planController= {
-    createNewPlan
+    createNewPlan,
+    getAllPlan,
+    getSinglePlan,
+    updatePlan,
+    deletePlan
 }
