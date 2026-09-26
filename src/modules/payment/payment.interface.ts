@@ -13,3 +13,13 @@ export interface IVerifyPaymentResponse {
   status: PaymentStatus | string;
   orderId: string;
 }
+
+export interface IPurchaseSubscriptionPayload {
+  userId: string;
+  planId: string;
+}
+ 
+export interface ISubscriptionIntentResponse {
+  subscriptionId: string; 
+  clientSecret: string; 
+}

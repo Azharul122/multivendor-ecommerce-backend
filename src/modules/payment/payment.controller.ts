@@ -1,5 +1,8 @@
 import { Request, Response } from "express";
 import { paymentService } from "./payment.service";
+import { ca } from "zod/v4/locales";
+import catchAsync from "../../utils/catchAsync";
+import sendResponse from "../../utils/sendResponse";
 
 
 const createPaymentIntent = async (req: Request, res: Response) => {
@@ -40,8 +43,22 @@ const stripeWebhook = async (req: Request, res: Response) => {
   }
 };
 
+
+
+const purchaseSubscription = catchAsync(async (req: Request, res: Response) => {
+  const { userId, planId } = req.body;
+  const result = await paymentService.purchaseSubscription(userId, planId);
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: "Subscription created successfully",
+    data: result,
+  })
+});
+
 export const paymentController = {
   createPaymentIntent,
   verifyPayment,
   stripeWebhook,
+  purchaseSubscription
 };
